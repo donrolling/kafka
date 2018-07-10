@@ -1,3 +1,6 @@
+Info
+	https://zablo.net/blog/post/setup-apache-kafka-in-docker-on-windows
+
 To Install
 	choco install docker
 	choco install docker-compose
