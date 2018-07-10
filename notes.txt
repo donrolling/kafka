@@ -18,6 +18,14 @@ To Install
 To Start
 	docker-compose down
 	
+To Setup
+	http://localhost:9000
+	Add Cluster
+		Name 	- 	Any Name
+		Hosts	- 	kafkaserver 
+	Creating Kafka Topic
+		kafka-test-topic
+	
 To Test
 	cd to dir and run each of these in a separate shell
 		1.	.\kafka-console-consumer.bat --bootstrap-server localhost:9092 --topic kafka_test_topic
