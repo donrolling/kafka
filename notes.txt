@@ -1,0 +1,29 @@
+To Install
+	choco install docker
+	choco install docker-compose
+	choco install docker-for-windows
+	reboot
+	choco install jre8
+
+	set java home path
+		https://stackoverflow.com/questions/15796855/java-is-not-recognized-as-an-internal-or-external-command#
+	restart powershell
+
+	download and extract
+		https://www.apache.org/dyn/closer.cgi?path=/kafka/0.10.2.0/kafka_2.11-0.10.2.0.tgz
+	
+To Start
+	docker-compose down
+	
+To Test
+	cd to dir and run each of these in a separate shell
+		1.	.\kafka-console-consumer.bat --bootstrap-server localhost:9092 --topic kafka_test_topic
+		
+		2.	.\kafka-console-producer.bat --broker-list localhost:9092 --topic kafka_test_topic
+		
+	In window #2, type any message and it will appear in window #1
+
+To Stop
+	docker-compose down
+	
+	
