@@ -6,7 +6,7 @@ using System.Collections.Generic;
 
 namespace KafkaShared {
 	public class Utility {
-		public const string Topic = "TestTopic";
+		public const string Topic = "kafka-test-topic";
 		public const string Url = "http://localhost:9092";
 
 		public static Consumer GetConsumer(string topic) {
