@@ -1,34 +1,42 @@
-﻿using KafkaNet;
-using KafkaNet.Model;
-using KafkaNet.Protocol;
-using System;
-using System.Collections.Generic;
+﻿using Confluent.Kafka.Serialization; 
+using Confluent.Kafka; 
+using System; 
+using System.Collections.Generic; 
+using System.Text; 
 
 namespace KafkaShared {
 	public class Utility {
-		public const string Topic = "kafka-test-topic";
-		public const string Url = "http://localhost:9092";
+		public const string Topic = "testtopic"; 
+		private const string _groupIdKey = "group.id"; 
+		private const string _groupId = "myconsumer"; 
+		private const string _bootstrapServerKey = "bootstrap.servers"; 
+		private const string _bootstrapServerUrl = "127.0.0.1:9092"; 
 
-		public static Consumer GetConsumer(string topic) {
-			var uri = new Uri(Url);
-			var options = new KafkaOptions(uri);
-			var router = new BrokerRouter(options);
-			var consumer = new Consumer(new ConsumerOptions(topic, router));
+		public static Consumer<Null, string> GetConsumer(string topic, Action<Message<Null, string>> action) {
+			var consumerConfig = new Dictionary <string, object>  { {_groupIdKey, _groupId },  {_bootstrapServerKey, _bootstrapServerUrl }, 
+            };
+			var consumer = new Consumer<Null, string> (consumerConfig, null, new StringDeserializer(Encoding.UTF8)); 
+			
+            //Subscribe to the OnMessage event
+            consumer.OnMessage += (obj, msg) => {
+				action.Invoke(msg);
+			};
+
+            //Subscribe to the topics
+			var topics = new List<string>{ topic }; 
+			consumer.Subscribe(topics); 
+			
 			return consumer;
 		}
 
-		public static Producer GetProducerClient() {
-			var uri = new Uri(Url);
-			var options = new KafkaOptions(uri);
-			var router = new BrokerRouter(options);
-			var client = new Producer(router);
-			return client;
+		private static Producer < Null, string > getProducerClient() {			
+            var producerConfig = new Dictionary < string, object >  { {_bootstrapServerKey, _bootstrapServerUrl }}; 
+            return new Producer < Null, string > (producerConfig, null, new StringSerializer(Encoding.UTF8)); 
 		}
 
-		public static void SendMessage(string topic, string command) {
-			var msg = new Message(command);
-			var client = GetProducerClient();
-			client.SendMessageAsync(Topic, new List<Message> { msg }).Wait();
+		public static void SendMessage(string topic, string message) {
+			var producer = getProducerClient(); 
+			var result = producer.ProduceAsync(topic, null, message).GetAwaiter().GetResult(); 
 		}
 	}
 }
